@@ -21,8 +21,30 @@ export class EvidenceService {
   wordAnalyzer(url) {
     this.getArticle(this.getYahooQueryUrl(url)).subscribe(data => {
       this.findKey(data, 'content');
-      this.words = this.countInstances(this.extractWords(this.article));
+      this.words = this.evaluateWords(this.countInstances(this.extractWords(this.article)));
     });
+  }
+
+  evaluateWords(instances) {
+    let words = [];
+    let normFactor = this.calculateNorm(instances);
+    instances.forEach(function(word){
+      let normalized = word.count / normFactor;
+      words.push({
+        word: word.word,
+        count: word.count,
+        normalized: normalized
+      })
+    });
+    return words;
+  }
+
+  calculateNorm (rawWords) {
+    let total = 0;
+    rawWords.forEach(function (word) {
+      total += word.count * word.count;
+    });
+    return Math.sqrt(total);
   }
 
   countInstances(allWords) {

@@ -70,10 +70,10 @@ export class NotifierService {
     this.maintenance = this.angularFire.database.list('/Notifier/rated-news', {preserveSnapshot: true});
     this.maintenance.subscribe(snapshots => {
       snapshots.forEach(function snapshot() {
-        let date = snapshot.val().date;
-        if (self.isOldNews(date) === true) {
-          self.maintenance.remove(snapshot.key);
-        }
+        // let date = snapshot.val().date;
+        // if (self.isOldNews(date) === true) {
+        //   self.maintenance.remove(snapshot.key);
+        //}
       });
     })
   }

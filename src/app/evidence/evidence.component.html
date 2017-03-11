@@ -8,13 +8,15 @@
                         <th>#</th>
                         <th>Words</th>
                         <th>Raw Value</th>
+                        <th>Normalized Value</th>
                       </tr>
                     </thead>
-                    <tbody *ngFor="let w of evidenceService.words; let i = index">
+                    <tbody *ngFor="let word of evidenceService.words; let i = index">
                       <tr>
                         <th>{{i + 1}}</th>
-                        <td>{{w.word}}</td>
-                        <td>{{w.count}}</td>
+                        <td>{{word.word}}</td>
+                        <td>{{word.count}}</td>
+                        <td>{{word.normalized}}</td>
                       </tr>
                     </tbody>
           </table>
