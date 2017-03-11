@@ -5,7 +5,7 @@ import { RatingService } from '../rating/rating.service';
 import { FirebaseListObservable, AngularFire } from 'angularfire2/angularfire2';
 
 @Injectable()
-export class NotifierService{
+export class NotifierService {
   private cron = require('node-cron');
   private collectorService;
   private ratingService;
@@ -14,6 +14,8 @@ export class NotifierService{
   private http;
   private threshold = [1, 5, 10];
   private items: FirebaseListObservable<any>;
+  private maintenance: FirebaseListObservable<any>;
+  private eraseFactor = 72; // 3 days
 
   constructor(collectorService: CollectorService, ratingService: RatingService,
      angularFire: AngularFire, http: Http){
@@ -28,6 +30,7 @@ export class NotifierService{
     //if (this.task !== null) { this.task.stop();}
     const self = this;
     this.task = this.cron.schedule('* */12 * * *', function() {
+      self.removeOldNews();
       //self.collectRateNotify(notifier, threshold);
     });
   }
@@ -61,6 +64,28 @@ export class NotifierService{
       if (threshold === 'high rated') { rank = this.threshold[2]; }
       else if (threshold === 'medium rated') { rank = this.threshold[1]; }
       return rank;
+  }
+  removeOldNews() {
+    const self = this;
+    this.maintenance = this.angularFire.database.list('/Notifier/rated-news', {preserveSnapshot: true});
+    this.maintenance.subscribe(snapshots => {
+      snapshots.forEach(function snapshot() {
+        let date = snapshot.val().date;
+        if (self.isOldNews(date) === true) {
+          self.maintenance.remove(snapshot.key);
+        }
+      });
+    })
+  }
+  isOldNews(newsDate) {
+        let eraseFactor = this.eraseFactor * 60 * 60 * 1000;
+        let now = new Date().getTime();
+        let then = new Date(newsDate).getTime();
+        if ((now - then) > eraseFactor) {
+          console.log(now - then);
+          return true;
+        }
+        return false;
   }
   emailNotification(ratedItem) {
     console.log('email sending ...');

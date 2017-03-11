@@ -23,6 +23,7 @@ import { AccuracyComponent } from './accuracy/accuracy.component';
 import { CollectorService } from './collector/collector.service';
 import { RatingService } from './rating/rating.service';
 import { NotifierService } from './notifier/notifier.service';
+import { EvidenceService } from './evidence/evidence.service';
 import { RatingLogic } from './rating/rating.logic';
 
 import { OrderByPipe } from './pipes/orderby.pipe';
@@ -56,7 +57,8 @@ export const firebaseConfig = {
     AppRoutingModule,
     AngularFireModule.initializeApp(firebaseConfig)
   ],
-  providers: [{provide: LocationStrategy, useClass: HashLocationStrategy}, CollectorService, NotifierService, RatingService, RatingLogic],
+  providers: [{provide: LocationStrategy, useClass: HashLocationStrategy}, CollectorService,
+    NotifierService, RatingService, EvidenceService, RatingLogic],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

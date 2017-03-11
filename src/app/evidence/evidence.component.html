@@ -1,3 +1,23 @@
-<p>
-  evidence works!
-</p>
+<div class="container">
+  <div class="col-md-6">
+      <div class="panel panel-default">
+          <div class="panel-heading">Processing words</div>
+          <table class="table">
+                    <thead>
+                      <tr>
+                        <th>#</th>
+                        <th>Words</th>
+                        <th>Raw Value</th>
+                      </tr>
+                    </thead>
+                    <tbody *ngFor="let w of evidenceService.words; let i = index">
+                      <tr>
+                        <th>{{i + 1}}</th>
+                        <td>{{w.word}}</td>
+                        <td>{{w.count}}</td>
+                      </tr>
+                    </tbody>
+          </table>
+      </div>
+  </div>
+</div>
