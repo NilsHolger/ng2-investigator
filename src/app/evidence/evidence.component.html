@@ -1,14 +1,53 @@
 <div class="container">
-  <div class="col-md-6">
+
+  <div class="col-md-5">
+
       <div class="panel panel-default">
-          <div class="panel-heading">Processing words</div>
+
+            <div class="panel-heading">Available News Items</div>
+            <ul class="list-unstyled">
+                <li *ngFor="let item of newsItems">
+                    <div class="media-right">
+                        <input type="radio" name="news" (click)="onSelect(item, true)">
+                        {{item.title}} <a href="{{item.link}}" target="_blank">(read more)</a> <br>
+                    </div>
+                </li>
+            </ul>
+            <div class="input-group">
+              <input type="text" class="form-control" #url placeholder="other news/article url ...">
+              <span class="input-group-btn">
+                  <button class="btn btn-default" type="button" (click)="onSelect(url.value, false)">Go!</button>
+              </span>
+            </div>
+        </div>
+        <div class="panel panel-default">
+          <div class="panel-heading">Nominated keywords for corpus</div>
+          <input type="text" [(ngModel)]="supportKeywords" class="form-control" placeholder="comma separated support keywords">
+          <input type="text" [(ngModel)]="mainKeyword" class="form-control" placeholder="keyword of interest">
+          <button type="submit" (click)="buildCorpus()" class="btn btn-default btn-block">Fetch Articles For Corpus</button>
+        </div>
+        <div class="panel panel-default">
+                <div class="panel-heading"> Extracted Contents
+
+                </div>
+        </div>
+  </div>
+
+  <div class="col-md-7">
+      <div class="panel panel-default">
+          <div class="panel-heading">Processed words
+          ( corpus: {{evidenceService.corpusSize}} items
+            - vocabulary: {{evidenceService.vocabularySize}} words )
+            <button class="btn btn-default btn-xs pull-right" type="button" (click)="onIDFs()">Calculate IDFs</button>
+            </div>
+          <div class="col-md-7">
           <table class="table">
                     <thead>
                       <tr>
                         <th>#</th>
                         <th>Words</th>
-                        <th>Raw Value</th>
-                        <th>Normalized Value</th>
+                        <th>Counts</th>
+                        <th>Normalized</th>
                       </tr>
                     </thead>
                     <tbody *ngFor="let word of evidenceService.words; let i = index">
@@ -20,6 +59,25 @@
                       </tr>
                     </tbody>
           </table>
+          </div>
+          <div class="col-md-5">
+            <table class="table">
+                      <thead>
+                        <tr>
+                          <th>IDF</th>
+                          <th>TF-IDF (C)</th>
+                          <th>TF-IDF (N)</th>
+                        </tr>
+                      </thead>
+                      <tbody *ngFor="let word of evidenceService.words; let i = index">
+                        <tr>
+                          <td>{{word.idf}}</td>
+                          <td>{{word.tfidf_C}}</td>
+                          <td>{{word.tfidf_N}}</td>
+                        </tr>
+                      </tbody>
+            </table>
+          </div>
       </div>
   </div>
 </div>

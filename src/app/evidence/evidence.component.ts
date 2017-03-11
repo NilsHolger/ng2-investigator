@@ -11,12 +11,8 @@ export class EvidenceComponent implements OnInit {
   private angularFire;
   private evidenceService;
   private newsItems;
-
-  evidence = [
-    { word : 'w1', count: 1},
-    { word : 'w2', count: 2},
-    { word : 'w3', count: 3}
-  ];
+  private supportKeywords;
+  private mainKeyword;
 
   constructor(angularFire: AngularFire,  evidenceService: EvidenceService) {
         this.angularFire = angularFire;
@@ -27,11 +23,25 @@ export class EvidenceComponent implements OnInit {
     this.angularFire.database.list('/Notifier/rated-news', {
       query: {
         orderByChild : 'rank',
-        limitToLast : 1 //fetch 1 item for now
+        limitToFirst : 5 //fetch 5 items
       }
-    }).subscribe(item => {
-      this.evidenceService.wordAnalyzer(item[0].link);
+    }).subscribe(data => {
+      this.newsItems = data;
     });
+  }
+
+  onSelect(item, isRadio) {
+    let url = isRadio ? item.link : item;
+    this.evidenceService.wordAnalyzer(url);
+  }
+
+  onIDFs() {
+    this.evidenceService.saveIDFs(this.mainKeyword);
+  }
+
+
+  buildCorpus() {
+    //todo: get input keywords and fetch related articles/news
   }
 
 

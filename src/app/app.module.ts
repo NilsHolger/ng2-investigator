@@ -34,7 +34,21 @@ export const firebaseConfig = {
         databaseURL: "https://ng2-investigator.firebaseio.com",
         storageBucket: "ng2-investigator.appspot.com",
         messagingSenderId: "112006120191"
-}
+};
+
+export const googleSearchConfig = {
+      apiKey: "AIzaSyCN0aDngAg2wjNbq6pzxUntKDjDgsE5ml4",
+      cx: "004287087866899583493:81pzopc3zps"
+};
+
+export const timeSpans = [
+      {"span": "d1", "sort": "date:d"},
+      {"span": "w1", "sort": "date:a"},
+      {"span": "m1", "sort": "date:a"},
+      {"span": "m6", "sort": "date:a"},
+      {"span": "y1", "sort": "date:a"},
+      {"span": "y10", "sort": "date:a"},
+];
 
 @NgModule({
   declarations: [
