@@ -1,3 +1,21 @@
-<p>
-  report works!
-</p>
+<div class="container">
+
+              <ul class="nav nav-tabs">
+                <li class="active">
+                    <a data-toggle="tab" href="#config">
+                      <span class="glyphicon glyphicon-cog"></span>
+                    </a>
+                </li>
+                <li *ngFor="let report of items">
+                      <a data-toggle="tab" href="#">template name</a>
+                </li>
+              </ul>
+              <div class="tab-content">
+                <div id="config" class="tab-pane fade in active">
+                    <app-report-template></app-report-template>
+                </div>
+                <div class="tab-pane fade">
+                    <div>PLACE HOLDER FOR REPORTS CONTENT</div>
+                </div>
+              </div>
+</div>

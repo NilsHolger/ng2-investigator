@@ -19,6 +19,7 @@ import { NotifierComponent } from './notifier/notifier.component';
 import { EvidenceComponent } from './evidence/evidence.component';
 import { AiComponent } from './ai/ai.component';
 import { ReportComponent } from './report/report.component';
+import { ReportTemplateComponent } from './report/report-template.component';
 import { AutopilotComponent } from './autopilot/autopilot.component';
 import { AccuracyComponent } from './accuracy/accuracy.component';
 import { ModalComponent } from './modal/modal.component';
@@ -64,6 +65,7 @@ export const timeSpans = [
     EvidenceComponent,
     AiComponent,
     ReportComponent,
+    ReportTemplateComponent,
     AutopilotComponent,
     AccuracyComponent,
     OrderByPipe,

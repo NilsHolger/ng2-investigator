@@ -1,6 +1,6 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { AngularFire } from 'angularfire2/angularfire2';
-
+import { AngularFire, FirebaseObjectObservable } from 'angularfire2/angularfire2';
+import { VisNetworkService } from 'ng2-vis/components/network';
 import { ModalComponent } from '../modal/modal.component';
 import { EvidenceService } from './evidence.service';
 
@@ -11,18 +11,21 @@ import { EvidenceService } from './evidence.service';
 })
 export class EvidenceComponent implements OnInit {
   @ViewChild(ModalComponent) modal: ModalComponent;
-
+  public visNetworkService: VisNetworkService;
   private angularFire;
   private evidenceService;
+  private network: FirebaseObjectObservable<any>;
   private newsItems;
   private mainKeyword;
   private supportKeywords;
   private clusterKeywords;
 
 
-  constructor(angularFire: AngularFire,  evidenceService: EvidenceService) {
+  constructor(angularFire: AngularFire,  evidenceService: EvidenceService, vns: VisNetworkService) {
         this.angularFire = angularFire;
         this.evidenceService = evidenceService;
+        this.network = angularFire.database.object('Evidence/Corpus/network-graph');
+        this.visNetworkService = vns;
    }
 
   ngOnInit() {
@@ -50,8 +53,10 @@ export class EvidenceComponent implements OnInit {
     if (this.mainKeyword === undefined || this.clusterKeywords === undefined) { return; }
     this.evidenceService.clusterBuilder(this.mainKeyword, this.clusterKeywords).then(data => {
       setTimeout(() => {
+           self.network.set(data[0]);
            self.modal.showModal(data[0]);
-      }, 10000);
+      }, 25000);
+      //this.visNetworkService.setData("networkId1", data);
      });
   }
 

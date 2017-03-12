@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Http, Response } from '@angular/http';
 import { AngularFire, FirebaseListObservable} from 'angularfire2/angularfire2';
-import {Observable} from 'rxjs';
+import { Observable } from 'rxjs';
 import { googleSearchConfig, timeSpans } from '../app.module';
 
 @Injectable()
@@ -72,8 +72,7 @@ export class EvidenceService {
       let flag;
       let keywords = centers.split(',');
       //let records = this.corpus._ref.once('value');
-      let ref = firebase.database().ref("Evidence/Corpus/Articles");
-      let records = ref.once("value");
+      let records = firebase.database().ref("Evidence/Corpus/Articles").once("value");
       let observations = {};
       let network = {};
       let nodes = [];
@@ -233,28 +232,29 @@ export class EvidenceService {
   saveIDFs (word) {
     let uniqueBagOfWords = {};
     this.IDFs.remove();
-    // this.corpus._ref.once('value').then(snapshot => {
-    //   this.corpusSize = snapshot.numChildren();
-    //   snapshot.forEach(item => {
-    //     item.child('bag_of_words').val().forEach(word => {
-    //       uniqueBagOfWords.hasOwnProperty(word.word) ? uniqueBagOfWords[word.word]++ : uniqueBagOfWords[word.word] = 1;
-    //     });
-    //   });
-    //   let words = Object.keys(uniqueBagOfWords);
-    //   this.vocabularySize = words.length;
-    //   words.forEach(word => {
-    //     let idf = Math.abs(Math.log2(this.corpusSize / (uniqueBagOfWords[word] + 1)));
-    //     this.IDFs.push({'word': word, 'doc_with_word': uniqueBagOfWords[word], 'IDF': idf});
-    //     this.words.some(function(item) {
-    //       if (item.word === word) {
-    //         item['idf'] = idf.toFixed(4);
-    //         item['tfidf_C'] = (idf * item.count).toFixed(4);
-    //         item['tfidf_N'] = (idf * item.normalized).toFixed(4);
-    //         return true;
-    //       }
-    //     })
-    //   });
-    // });
+    let records = firebase.database().ref("Evidence/Corpus/IDFs").once("value");
+    records.then(snapshot => {
+      this.corpusSize = snapshot.numChildren();
+      snapshot.forEach(item => {
+        item.child('bag_of_words').val().forEach(word => {
+          uniqueBagOfWords.hasOwnProperty(word.word) ? uniqueBagOfWords[word.word]++ : uniqueBagOfWords[word.word] = 1;
+        });
+      });
+      let words = Object.keys(uniqueBagOfWords);
+      this.vocabularySize = words.length;
+      words.forEach(word => {
+        let idf = Math.abs(Math.log2(this.corpusSize / (uniqueBagOfWords[word] + 1)));
+        this.IDFs.push({'word': word, 'doc_with_word': uniqueBagOfWords[word], 'IDF': idf});
+        this.words.some(function(item) {
+          if (item.word === word) {
+            item['idf'] = idf.toFixed(4);
+            item['tfidf_C'] = (idf * item.count).toFixed(4);
+            item['tfidf_N'] = (idf * item.normalized).toFixed(4);
+            return true;
+          }
+        })
+      });
+    });
   }
 
   wordCounts(url) {
