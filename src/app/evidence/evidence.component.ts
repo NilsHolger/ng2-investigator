@@ -48,8 +48,11 @@ export class EvidenceComponent implements OnInit {
   buildClusters() {
     const self = this;
     if (this.mainKeyword === undefined || this.clusterKeywords === undefined) { return; }
-    this.evidenceService.clusterBuilder(this.mainKeyword, this.clusterKeywords).then(data => { console.log(data); });
-    //.then(data => { self.modal.showModal(data[0]);});
+    this.evidenceService.clusterBuilder(this.mainKeyword, this.clusterKeywords).then(data => {
+      setTimeout(() => {
+           self.modal.showModal(data[0]);
+      }, 10000);
+     });
   }
 
 

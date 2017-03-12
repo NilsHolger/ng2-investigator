@@ -15,6 +15,37 @@ export class EvidenceService {
   private words;
   private clusters;
   private article = '';
+  private colors = [{
+  border: '#555555',
+  background: '#BBBBBB',
+  highlight: { border: '#444444', background: '#EEEEEE' },
+  hover: { border: '#444444', background: '#EEEEEE' }
+},{
+  border: '#777777',
+  background: '#DADADA',
+  highlight: { border: '#555555', background: '#EFEFEF' },
+  hover: { border: '#555555', background: '#EFEFEF' }
+},{
+  border: '#CC9900',
+  background: '#FFCC00',
+  highlight: { border: '#FF9900', background: '#FFEE55' },
+  hover: { border: '#FF9900', background: '#FFEE55' }
+},{
+  border: '#990066',
+  background: '#FF99CC',
+  highlight: { border: '#FF66CC', background: '#FFCCCC' },
+  hover: { border: '#FF66CC', background: '#FFCCCC' }
+},{
+  border: '#666600',
+  background: '#99CC66',
+  highlight: { border: '#999900', background: '#66FF33' },
+  hover: { border: '#999900', background: '#66FF33' }
+},{
+  border: '#2B7CE9',
+  background: '#97C2FC',
+  highlight: { border: '#2B7CE9', background: '#D2E5FF' },
+  hover: { border: '#2B7CE9', background: '#D2E5FF' }
+}];
 
 
   constructor(http: Http, angularFire: AngularFire) {
@@ -34,12 +65,15 @@ export class EvidenceService {
 
   clusterBuilder(main, centers) {
       const self = this;
+      let myCenters = centers;
       let count;
       let max;
       let clusterCenters = {};
       let flag;
       let keywords = centers.split(',');
-      let records = this.corpus.push('');
+      //let records = this.corpus._ref.once('value');
+      let ref = firebase.database().ref("Evidence/Corpus/Articles");
+      let records = ref.once("value");
       let observations = {};
       let network = {};
       let nodes = [];
@@ -47,10 +81,10 @@ export class EvidenceService {
       let currentCenterId;
       let id = 10;
       let colorIndex = 2;
-      // nodes.push({
-      //   id: 1, label: main, title: [main, 'This is the root'], font: {size:40},
-      //   color: this.colors[0], borderWidth: 3, borderWidthSelected: 4
-      // });
+      nodes.push({
+        id: 1, label: main, title: [main, 'This is the root'], font: {size:40},
+        color: this.colors[0], borderWidth: 3, borderWidthSelected: 4
+      });
 
       return Promise.all(keywords.map(function (word) {
         observations[word] = [];
@@ -60,7 +94,8 @@ export class EvidenceService {
             snapshot.forEach(article => {
               count = 0;
               flag = false;
-              article.child('bag_of_words').val().forEach(word => {
+              let val = article.val();
+              val.bag_of_words.forEach(word => {
                 if (word.word == word) count += word.count;
                 if (word.word == main) flag = true;
               });
@@ -68,7 +103,7 @@ export class EvidenceService {
                 max = count;
                 clusterCenters[word] = {
                   id: article.key,
-                  bag_of_words: article.child('bag_of_words').val()
+                  bag_of_words: val.bag_of_words
                 }
               }
               edges.push({from: 1, to: currentCenterId, width: 2});
@@ -88,27 +123,30 @@ export class EvidenceService {
             return clusterCenters;
           })
           .then(centers => {
+            let myCenterA = myCenters.split(',');
               let i = 1;
               return records
                 .then(snapshot => {
                   snapshot.forEach(article => {
                     let sum = 0;
                     let distance = 0;
-                    let contents = article.child('article').val();
-                    centers[word].bag_of_words.forEach(k => {
-                      article.child('bag_of_words').val().forEach(w => {
-                        if (k.word == w.word) {
+                    let contents = article.val();
+                     myCenterA.forEach(k => {
+                       if(contents.bag_of_words) {
+                      contents.bag_of_words.forEach(w => {
+                        if (k === w.word) {
                           sum += isNaN(k.normalized * w.normalized) ?
                             0 : (k.normalized * w.normalized);
                         }
                       })
+                    }
                     })
                     distance = 1 - sum;
                     observations[word].push({
                       id: article.key,
                       distance: distance.toFixed(4),
                       link: article.child('link').val(),
-                      size: contents.split(' ').length
+                      size: contents.length ? contents.length : 0
                     });
                   })
                   observations[word].sort(function (a, b) {
@@ -148,6 +186,7 @@ export class EvidenceService {
                 })
             })
         network = {nodes: nodes, edges: edges};
+        //console.log(network);
         return network;
       }));
     }
