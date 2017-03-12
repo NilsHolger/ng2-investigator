@@ -29,3 +29,9 @@ Run `ng github-pages:deploy` to deploy to GitHub Pages.
 ## Further help
 
 To get more help on the `angular-cli` use `ng help` or go check out the [Angular-CLI README](https://github.com/angular/angular-cli/blob/master/README.md).
+
+## angularfire2
+
+Start with the README: https://github.com/angular/angularfire2
+Go through the Developer's Guide: https://github.com/angular/angularfire2#developer-guide
+Read the full API reference: https://github.com/angular/angularfire2/blob/master/docs/api-reference.md

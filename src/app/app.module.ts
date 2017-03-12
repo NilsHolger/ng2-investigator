@@ -6,8 +6,10 @@ import { RouterModule } from '@angular/router';
 import { AppRoutingModule } from './app.routes';
 import { LocationStrategy, HashLocationStrategy } from '@angular/common';
 import { AngularFireModule } from 'angularfire2';
-import 'rxjs/Rx';
+import { VisModule } from 'ng2-vis';
+
 import 'node-cron';
+import 'rxjs/Rx';
 
 import { AppComponent } from './app.component';
 import { NavigationComponent } from './navigation/navigation.component';
@@ -19,6 +21,7 @@ import { AiComponent } from './ai/ai.component';
 import { ReportComponent } from './report/report.component';
 import { AutopilotComponent } from './autopilot/autopilot.component';
 import { AccuracyComponent } from './accuracy/accuracy.component';
+import { ModalComponent } from './modal/modal.component';
 
 import { CollectorService } from './collector/collector.service';
 import { RatingService } from './rating/rating.service';
@@ -27,6 +30,7 @@ import { EvidenceService } from './evidence/evidence.service';
 import { RatingLogic } from './rating/rating.logic';
 
 import { OrderByPipe } from './pipes/orderby.pipe';
+
 
 export const firebaseConfig = {
         apiKey: "AIzaSyBN1zVUFMKTH90DYuSfkJSi4N1HTpoZrWI",
@@ -62,14 +66,16 @@ export const timeSpans = [
     ReportComponent,
     AutopilotComponent,
     AccuracyComponent,
-    OrderByPipe
+    OrderByPipe,
+    ModalComponent
   ],
   imports: [
     BrowserModule,
     FormsModule,
     HttpModule,
     AppRoutingModule,
-    AngularFireModule.initializeApp(firebaseConfig)
+    AngularFireModule.initializeApp(firebaseConfig),
+    VisModule
   ],
   providers: [{provide: LocationStrategy, useClass: HashLocationStrategy}, CollectorService,
     NotifierService, RatingService, EvidenceService, RatingLogic],

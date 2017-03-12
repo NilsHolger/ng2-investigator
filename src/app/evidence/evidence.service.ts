@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Http, Response } from '@angular/http';
-import { AngularFire, FirebaseListObservable } from 'angularfire2/angularfire2';
+import { AngularFire, FirebaseListObservable} from 'angularfire2/angularfire2';
 import {Observable} from 'rxjs';
 import { googleSearchConfig, timeSpans } from '../app.module';
 
@@ -13,6 +13,7 @@ export class EvidenceService {
   private corpusSize;
   private vocabularySize;
   private words;
+  private clusters;
   private article = '';
 
 
@@ -30,6 +31,126 @@ export class EvidenceService {
       this.fetchLinks(keyword);
     })
   }
+
+  clusterBuilder(main, centers) {
+      const self = this;
+      let count;
+      let max;
+      let clusterCenters = {};
+      let flag;
+      let keywords = centers.split(',');
+      let records = this.corpus.push('');
+      let observations = {};
+      let network = {};
+      let nodes = [];
+      let edges = [];
+      let currentCenterId;
+      let id = 10;
+      let colorIndex = 2;
+      // nodes.push({
+      //   id: 1, label: main, title: [main, 'This is the root'], font: {size:40},
+      //   color: this.colors[0], borderWidth: 3, borderWidthSelected: 4
+      // });
+
+      return Promise.all(keywords.map(function (word) {
+        observations[word] = [];
+        records
+          .then(snapshot => {
+            max = 0;
+            snapshot.forEach(article => {
+              count = 0;
+              flag = false;
+              article.child('bag_of_words').val().forEach(word => {
+                if (word.word == word) count += word.count;
+                if (word.word == main) flag = true;
+              });
+              if (flag && count > max) {
+                max = count;
+                clusterCenters[word] = {
+                  id: article.key,
+                  bag_of_words: article.child('bag_of_words').val()
+                }
+              }
+              edges.push({from: 1, to: currentCenterId, width: 2});
+              return clusterCenters;
+            })
+            currentCenterId = id++;
+            nodes.push({
+              id: currentCenterId,
+              label: word,
+              title:[word, 'This is a cluster center', 0],
+              color: '',
+              borderWidth: 2,
+              borderWidthSelected: 3,
+              font: {size: 28},
+            });
+            edges.push({from: 1, to: currentCenterId, width: 2});
+            return clusterCenters;
+          })
+          .then(centers => {
+              let i = 1;
+              return records
+                .then(snapshot => {
+                  snapshot.forEach(article => {
+                    let sum = 0;
+                    let distance = 0;
+                    let contents = article.child('article').val();
+                    centers[word].bag_of_words.forEach(k => {
+                      article.child('bag_of_words').val().forEach(w => {
+                        if (k.word == w.word) {
+                          sum += isNaN(k.normalized * w.normalized) ?
+                            0 : (k.normalized * w.normalized);
+                        }
+                      })
+                    })
+                    distance = 1 - sum;
+                    observations[word].push({
+                      id: article.key,
+                      distance: distance.toFixed(4),
+                      link: article.child('link').val(),
+                      size: contents.split(' ').length
+                    });
+                  })
+                  observations[word].sort(function (a, b) {
+                    return a['distance'] - b['distance'];
+                  });
+                  observations[word] = observations[word].slice(0,6);
+
+                  var node = nodes.find(node => node.label === word);
+                  observations[word].forEach(item => {
+                    nodes.push({
+                      id: id,
+                      label: (item.link)?item.link
+                        .replace('http://','')
+                        .replace('https://','')
+                        .replace('www.','').split("/")[0]+'\n'+item.size+' words'
+                      :'4xx',
+                      title: [item.link, item.id],
+                      shadow:{ enabled: true, color: 'rgba(0,0,0,0.5)', size:11, x:3, y:3 },
+                      color: '',
+                      shape: 'box'
+                    });
+                    edges.push({
+                      from: node.id,
+                      to: id,
+                      dashes: true,
+                      label: item.distance,
+                      length: 100 + item.distance * 1000,
+                      font: {
+                        color: '#777777',
+                        background: 'white',
+                        align:'middle'
+                      },
+                    });
+                    id++;
+                  });
+                  colorIndex ++;
+                })
+            })
+        network = {nodes: nodes, edges: edges};
+        return network;
+      }));
+    }
 
   setKeywordArray(mainKeyword, supportKeywords) {
     let keywords = [];
@@ -61,6 +182,7 @@ export class EvidenceService {
     return `
           https://www.googleapis.com/customsearch/v1?key=${googleSearchConfig.apiKey}
           &cx=${googleSearchConfig.cx}&q=${keyword}&sort=${range.sort}&dateRestrict=${range.span}
+          &num=3
     `;
   }
 

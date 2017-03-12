@@ -2,7 +2,7 @@
 
   <div class="col-md-5">
 
-      <div class="panel panel-default">
+      <!-- <div class="panel panel-default">
 
             <div class="panel-heading">Available News Items</div>
             <ul class="list-unstyled">
@@ -25,11 +25,17 @@
           <input type="text" [(ngModel)]="supportKeywords" class="form-control" placeholder="comma separated support keywords">
           <input type="text" [(ngModel)]="mainKeyword" class="form-control" placeholder="keyword of interest">
           <button type="submit" (click)="buildCorpus()" class="btn btn-default btn-block">Fetch Articles For Corpus</button>
+        </div> -->
+
+        <div class="panel panel-default">
+          <div class="panel-heading">Nominated keywords for cluster centers</div>
+          <input type="text" [(ngModel)]="mainKeyword" class="form-control" placeholder="keyword of interest">
+          <input type="text" [(ngModel)]="clusterKeywords" class="form-control" placeholder="comma separated cluster keywords">
+          <button type="submit" (click)="buildClusters()" class="btn btn-default btn-block">Build Clusters</button>
         </div>
         <div class="panel panel-default">
-                <div class="panel-heading"> Extracted Contents
-
-                </div>
+                <div class="panel-heading"> Extracted Contents</div>
+                <p class="news-contents">{{evidenceService.article}}</p>
         </div>
   </div>
 
@@ -81,3 +87,4 @@
       </div>
   </div>
 </div>
+<app-modal></app-modal>
