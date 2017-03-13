@@ -7,16 +7,23 @@
                     </a>
                 </li>
                 <li *ngFor="let report of items">
-                      <a data-toggle="tab" href="#">template name</a>
+                      <a data-toggle="tab" href="#{{report.$key}}">{{report.templateName}}</a>
                 </li>
               </ul>
               <div class="tab-content">
                 <div id="config" class="tab-pane fade in active">
-                    <app-report-template *ngFor="let template of templates" [template]="template">
+                    <app-report-template *ngFor="let template of items" [template]="template"
+                    (onSaveReportTemplate)="onSaveReportTemplate($event)"
+                    (onDeleteReportTemplate)="onDeleteReportTemplate($event)">
                     </app-report-template>
+                    <button type="button" class="btn btn-default" (click)="newReportTemplate()">
+                      <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
+                    </button>
                 </div>
-                <div class="tab-pane fade">
-                    <div>PLACE HOLDER FOR REPORTS CONTENT</div>
+                <div class="tab-pane fade" *ngFor="let report of items" id="{{report.$key}}">
+                    <div>placeholder for {{report.templateName}}</div>
+                    <app-report-general [general]="general"></app-report-general>
+                    <app-report-corpus [corpus]="corpus"></app-report-corpus>
                 </div>
               </div>
 </div>

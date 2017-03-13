@@ -1,0 +1,88 @@
+<div class="row corpus">
+      <div class="col-md-3 space">
+        <div class="panel panel-default">
+          <div class="panel-heading">Top {{corpus.topFreqs.length}}
+             Frequent Words
+          </div>
+          <table class="table">
+                <thead>
+                  <tr>
+                    <th>#</th>
+                    <th>Words</th>
+                    <th>Counts</th>
+                  </tr>
+                </thead>
+                <tbody *ngFor="let word of corpus.topFreqs; let i = index;">
+                  <tr>
+                    <th>{{i+1}}</th>
+                    <td>{{word.word}}</td>
+                    <td>{{word.count}}</td>
+                  </tr>
+                </tbody>
+          </table>
+        </div>
+      </div>
+      <div class="col-md-3">
+            <div class="panel panel-default">
+                <div class="panel-heading">Top {{corpus.topIdFs.length}} IDFs</div>
+                <table class="table">
+                  <thead>
+                    <tr>
+                      <th>#</th>
+                      <th>Words</th>
+                      <th>IDFs</th>
+                    </tr>
+                  </thead>
+                  <tbody *ngFor="let word of corpus.topIdFs; let i = index;">
+                      <tr>
+                      <th>{{i+1}}</th>
+                      <td>{{word.word}}</td>
+                      <td>{{word.idf}}</td>
+                      </tr>
+                  </tbody>
+                </table>
+            </div>
+      </div>
+      <div class="col-md-1"></div>
+      <div class="col-md-4">
+          <div *ngIf="corpus.articleStats.length > 0">
+              <div *ngFor="let stat of corpus.articleStats">
+                    <div class="row" id="talkbubble1">
+                      <div class="col-md-8">
+                          <p>The longest article in this corpus with {{stat.longestArticle.size}} letters is located here:<br>
+                          <a href="{{stat.longestArticle.link}}" target="_blank">{{stat.longestArticle.link|slice:0:42}}...</a></p>
+                      </div>
+                      <div class="col-md-4 circle">
+                            <div class="circle-inner">
+                                <h1>{{stat.longestArticle.size}}</h1>
+                            </div>
+                      </div>
+                    </div>
+                    <div class="row" id="talkbubble2">
+                      <div class="col-md-8">
+                        <p>The average article size in the corpus contains {{stat.averageSize}} letters</p>
+                      </div>
+                      <div class="col-md-4 circle">
+                          <div class="circle-inner">
+                            <h1>{{stat.averageSize}}</h1>
+                          </div>
+                      </div>
+                    </div>
+                    <div class="row" id="talkbubble3">
+                          <div class="col-md-8">
+                              <p>The Shortest article in this corpus with {{stat.shortestArticle.size}} letters can be found here:
+                                <a href="{{stat.shortestArticle.link}}" target="_blank">
+                                    {{stat.shortestArticle.link|slice:0:42}}...
+                                </a>
+                              </p>
+                          </div>
+                          <div class="col-md-4 circle">
+                                  <div class="circle-inner">
+                                        <h1>{{stat.shortestArticle.size}}</h1>
+                                  </div>
+                          </div>
+                    </div>
+              </div>
+          </div>
+      </div>
+</div>
