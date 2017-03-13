@@ -7,7 +7,11 @@
                     </a>
                 </li>
                 <li *ngFor="let report of items">
-                      <a data-toggle="tab" href="#{{report.$key}}">{{report.templateName}}</a>
+                      <a data-toggle="tab" href="#{{report.$key}}">{{report.templateName}}
+                        <button *ngIf="report.printButton" type="button" class="btn btn-default btn-xs"
+                        (click)="printReport(report.$key)"><span class="glyphicon glyphicon-print" aria-hidden="true"></span>
+                      </button>
+                      </a>
                 </li>
               </ul>
               <div class="tab-content">

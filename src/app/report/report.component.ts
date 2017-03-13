@@ -48,4 +48,14 @@ export class ReportComponent implements OnInit {
                                       {show: false, size: false, distance: false, url: false}, 0, 0));
   }
 
+  printReport(id) {
+    let print = window.open('', '', '');
+    print.document.write('<html><title>Print</title><body>');
+    print.document.write(document.getElementById(id).innerHTML);
+    print.document.write('</body></html>');
+    print.document.close();
+    print.print();
+    return true;
+  }
+
 }
