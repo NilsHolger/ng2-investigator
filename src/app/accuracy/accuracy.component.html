@@ -1,3 +1,66 @@
-<p>
-  accuracy works!
-</p>
+<div class="container">
+    <div class="row">
+      <div class="col-md-6">
+        <div class="panel panel-default">
+          <div class="panel-heading">Preventions</div>
+          <div class="panel-body">
+            <p>This is where we prevent incidents in our application</p>
+          </div>
+
+          <table class="table">
+              <thead>
+                <tr>
+                  <th>#</th>
+                  <th>Description</th>
+                  <th>Hits</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let prevention of preventions; let i = index;">
+                  <th scope="row">{{i+1}}</th>
+                  <td>
+                    <span class="desc">prevention.description</span><br>
+                    <span class="file">prevention.loc</span>
+                    <span class="line_no">prevention.line</span>
+                  </td>
+                  <td>prevention.hits</td>
+                </tr>
+              </tbody>
+          </table>
+        </div>
+      </div>
+      <div class="col-md-6">
+          <div class="panel panel-default">
+            <div class="panel-heading">
+              Cure
+              <button type="button" class="btn btn-default btn-xs pull-right" (click)="newCure()">
+                <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
+              </button>
+            </div>
+            <div class="panel-body">
+              <p>This is where we cure incidents in our application</p>
+            </div>
+            <table class="table">
+                  <thead>
+                      <tr>
+                        <th>#</th>
+                        <th>Description</th>
+                        <th></th>
+                      </tr>
+                  </thead>
+                  <tbody>
+                    <tr *ngFor="let cure of items; let i = index;">
+                      <th scope="row">{{i + 1}}</th>
+                      <td contenteditable="true" (keyup.enter)="editCure(cure.$key, $event)">cure.description</td>
+                      <td>
+                        <button type="button" class="btn btn-default btn-xs pull-right" (click)="deleteCure(cure.$key)">
+                          <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
+                        </button>
+                      </td>
+                    </tr>
+                  </tbody>
+            </table>
+          </div>
+      </div>
+    </div>
+</div>

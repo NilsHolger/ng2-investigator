@@ -2,7 +2,8 @@ import { Injectable } from '@angular/core';
 import { Http, Response } from '@angular/http';
 import { AngularFire, FirebaseListObservable} from 'angularfire2/angularfire2';
 import { Observable } from 'rxjs';
-import { googleSearchConfig, timeSpans } from '../app.module';
+import { googleSearchConfig, timeSpans, articleRange } from '../app.module';
+import { AccuracyService } from '../accuracy/accuracy.service';
 
 @Injectable()
 export class EvidenceService {
@@ -15,6 +16,7 @@ export class EvidenceService {
   private words;
   private clusters;
   private article = '';
+  private accuracy;
   private colors = [{
   border: '#555555',
   background: '#BBBBBB',
@@ -48,11 +50,12 @@ export class EvidenceService {
 }];
 
 
-  constructor(http: Http, angularFire: AngularFire) {
+  constructor(http: Http, angularFire: AngularFire, accuracyService: AccuracyService) {
     this.http = http;
     this.angularFire = angularFire;
     this.corpus = angularFire.database.list('Evidence/Corpus/Articles');
     this.IDFs = angularFire.database.list('Evidence/Corpus/IDFs');
+    this.accuracy = accuracyService;
   }
 
   corpusBuilder(mainKeyword, supportKeywords) {
@@ -269,7 +272,14 @@ export class EvidenceService {
     this.getArticle(this.getYahooQueryUrl(url)).subscribe(data => {
       this.resetCounters();
       this.findKey(data, 'content');
-      if (this.article) {
+      if (this.article.length< articleRange.min || this.article.length > articleRange.max) {
+        this.accuracy.takeSnapShot(
+          '-K_KillCSD-f13wQRrEMZ',
+          'Cure for article length problem',
+          'evidence.service.ts', 77,
+          [{url: url}, {data: data}]
+        )
+      } else {
       this.evaluateWords(this.countInstances(this.extractWords(this.article)))
       .then(data => {
         this.corpus.push({article: this.article, link: url, bag_of_words: data});

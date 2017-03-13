@@ -30,6 +30,7 @@ import { CollectorService } from './collector/collector.service';
 import { RatingService } from './rating/rating.service';
 import { NotifierService } from './notifier/notifier.service';
 import { EvidenceService } from './evidence/evidence.service';
+import { AccuracyService } from './accuracy/accuracy.service';
 import { RatingLogic } from './rating/rating.logic';
 
 import { OrderByPipe } from './pipes/orderby.pipe';
@@ -56,6 +57,10 @@ export const timeSpans = [
       {"span": "y1", "sort": "date:a"},
       {"span": "y10", "sort": "date:a"},
 ];
+
+export let Preventions = [];
+
+export const articleRange = {min: 100, max: 10000}; //characters
 
 @NgModule({
   declarations: [
@@ -84,7 +89,7 @@ export const timeSpans = [
     VisModule
   ],
   providers: [{provide: LocationStrategy, useClass: HashLocationStrategy}, CollectorService,
-    NotifierService, RatingService, EvidenceService, RatingLogic],
+    NotifierService, RatingService, EvidenceService, AccuracyService, RatingLogic],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
