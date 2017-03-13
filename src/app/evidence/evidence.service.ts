@@ -72,7 +72,8 @@ export class EvidenceService {
       let flag;
       let keywords = centers.split(',');
       //let records = this.corpus._ref.once('value');
-      let records = firebase.database().ref("Evidence/Corpus/Articles").once("value");
+      let ref = firebase.database().ref("Evidence/Corpus/Articles");
+      let records = ref.once("value");
       let observations = {};
       let network = {};
       let nodes = [];
@@ -105,7 +106,7 @@ export class EvidenceService {
                   bag_of_words: val.bag_of_words
                 }
               }
-              edges.push({from: 1, to: currentCenterId, width: 2});
+              edges.push({from: 1, to: currentCenterId ? currentCenterId : 0, width: 2});
               return clusterCenters;
             })
             currentCenterId = id++;

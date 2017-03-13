@@ -53,6 +53,7 @@ export class EvidenceComponent implements OnInit {
     if (this.mainKeyword === undefined || this.clusterKeywords === undefined) { return; }
     this.evidenceService.clusterBuilder(this.mainKeyword, this.clusterKeywords).then(data => {
       setTimeout(() => {
+           console.log(data[0]);
            self.network.set(data[0]);
            self.modal.showModal(data[0]);
       }, 25000);

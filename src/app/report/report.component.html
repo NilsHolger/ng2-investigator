@@ -12,7 +12,8 @@
               </ul>
               <div class="tab-content">
                 <div id="config" class="tab-pane fade in active">
-                    <app-report-template></app-report-template>
+                    <app-report-template *ngFor="let template of templates" [template]="template">
+                    </app-report-template>
                 </div>
                 <div class="tab-pane fade">
                     <div>PLACE HOLDER FOR REPORTS CONTENT</div>
